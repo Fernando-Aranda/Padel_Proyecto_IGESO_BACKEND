@@ -8,13 +8,22 @@ import {
 } from 'class-validator';
 
 export class CreateUsuarioDto {
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
-
+  
   @IsString()
   @IsNotEmpty()
   nombre: string;
+  
+  @IsString()
+  @IsNotEmpty()
+  apellido: string;
+
+  @IsString()
+  @IsNotEmpty()
+  rut: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  correo: string;
 
   @IsString()
   @IsNotEmpty()
@@ -24,12 +33,13 @@ export class CreateUsuarioDto {
   @IsString()
   telefono?: string;
 
-  @IsOptional()
   @IsString()
-  direccion?: string;
+  @IsNotEmpty()
+  rol: string;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
   monto?: number;
+
 }

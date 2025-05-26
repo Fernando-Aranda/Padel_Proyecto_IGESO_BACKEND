@@ -5,11 +5,17 @@ export class Usuario {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
-  email: string;
-
   @Column()
   nombre: string;
+
+  @Column()
+  apellido: string;
+
+  @Column({ unique: true })
+  rut: string;
+
+  @Column({ unique: true })
+  correo: string;
 
   @Column()
   password: string;
@@ -17,8 +23,8 @@ export class Usuario {
   @Column({ nullable: true })
   telefono?: string;
 
-  @Column({ nullable: true })
-  direccion?: string;
+  @Column()
+  rol: string;
 
   @Column({ type: 'decimal', default: 0 })
   monto: number;

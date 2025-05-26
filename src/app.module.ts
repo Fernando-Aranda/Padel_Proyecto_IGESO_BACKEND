@@ -10,9 +10,9 @@ import { Usuario } from './usuario/entities/usuario.entity';
       type: 'postgres',
       host: 'localhost',
       port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'padel_db',
+      username: 'postgres', // el user
+      password: 'postgres', // la contraseña de la base de datos
+      database: 'padel_db', // el nombre de la base de datos
       entities: [Usuario],
       synchronize: true, // sólo para desarrollo, no en producción
     }),
