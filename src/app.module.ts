@@ -3,6 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TasksModule } from './tasks/tasks.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { Usuario } from './usuario/entities/usuario.entity';
+import { CanchaModule } from './cancha/cancha.module';
+import { ReservaModule } from './reserva/reserva.module';
+import { UsuarioReservaModule } from './usuario_reserva/usuario_reserva.module';
+import { PagoModule } from './pago/pago.module';
+import { NotificacionModule } from './notificacion/notificacion.module';
 
 @Module({
   imports: [
@@ -18,6 +23,11 @@ import { Usuario } from './usuario/entities/usuario.entity';
     }),
     TasksModule,
     UsuarioModule,
+    CanchaModule,
+    ReservaModule,
+    UsuarioReservaModule,
+    PagoModule,
+    NotificacionModule,
   ],
   controllers: [],
   providers: [],
