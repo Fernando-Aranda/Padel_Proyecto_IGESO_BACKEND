@@ -8,6 +8,8 @@ import { ReservaModule } from './reserva/reserva.module';
 import { UsuarioReservaModule } from './usuario_reserva/usuario_reserva.module';
 import { PagoModule } from './pago/pago.module';
 import { NotificacionModule } from './notificacion/notificacion.module';
+import { AdminModule } from './admin/admin.module';
+import { ReporteModule } from './reporte/reporte.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { NotificacionModule } from './notificacion/notificacion.module';
     UsuarioReservaModule,
     PagoModule,
     NotificacionModule,
+    AdminModule,
+    ReporteModule,
   ],
   controllers: [],
   providers: [],
