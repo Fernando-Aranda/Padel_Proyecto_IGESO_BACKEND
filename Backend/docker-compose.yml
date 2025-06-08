@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:13
+    container_name: padel_proyect_db
+    environment:
+      POSTGRES_DB: padel_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - backend 
+    volumes:
+      - db-padel:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  db-padel:
+
+networks:
+  backend:
+    driver: bridge
