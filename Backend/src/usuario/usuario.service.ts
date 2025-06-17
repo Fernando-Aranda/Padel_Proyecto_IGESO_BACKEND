@@ -49,4 +49,9 @@ export class UsuarioService {
     await this.usuarioRepository.remove(usuario);
     return { message: `Usuario con ID ${id} eliminado` };
   }
+
+  async findByCorreo(correo: string): Promise<Usuario | null> {
+  return this.usuarioRepository.findOne({ where: { correo } });
+}
+
 }

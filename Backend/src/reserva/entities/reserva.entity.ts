@@ -1,6 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
 import { Usuario } from '../../usuario/entities/usuario.entity';
 import { Cancha } from '../../cancha/entities/cancha.entity';
+import { OneToMany } from 'typeorm';
+import { UsuarioReserva } from '../../usuario_reserva/entities/usuario_reserva.entity';
 
 @Entity('reservas')
 export class Reserva {
@@ -29,4 +31,7 @@ export class Reserva {
 
   @CreateDateColumn({ type: 'timestamp' })
   fecha_creacion: Date;
+
+  @OneToMany(() => UsuarioReserva, usuarioReserva => usuarioReserva.reserva)
+  usuarioReservas: UsuarioReserva[];
 }

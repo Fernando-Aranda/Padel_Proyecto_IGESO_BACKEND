@@ -1,22 +1,9 @@
-import { IsInt, IsString, IsNotEmpty, Min } from 'class-validator';
+import { IsInt, Min } from 'class-validator';
 
 export class CreateUsuarioReservaDto {
   @IsInt()
-  id_reserva: number;
-
-  @IsString()
-  @IsNotEmpty()
-  nombre: string;
-
-  @IsString()
-  @IsNotEmpty()
-  apellido: string;
-
-  @IsString()
-  @IsNotEmpty()
-  rut: string;
+  id_usuario: number;
 
   @IsInt()
-  @Min(0)
-  edad: number;
+  id_reserva: number;
 }

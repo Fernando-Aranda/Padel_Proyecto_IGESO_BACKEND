@@ -6,7 +6,7 @@ import {
 
 export class CreateReporteDto {
   @IsDateString()
-  fecha: string;
+  fecha: Date;
 
   @IsString()
   @IsNotEmpty()

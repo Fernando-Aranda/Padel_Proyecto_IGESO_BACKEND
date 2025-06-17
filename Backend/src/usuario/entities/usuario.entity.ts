@@ -1,4 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { OneToMany } from 'typeorm';
+import { UsuarioReserva } from '../../usuario_reserva/entities/usuario_reserva.entity';
 
 @Entity('usuarios')
 export class Usuario {
@@ -28,4 +30,7 @@ export class Usuario {
 
   @Column({ type: 'decimal', default: 0 })
   monto: number;
+
+   @OneToMany(() => UsuarioReserva, usuarioReserva => usuarioReserva.usuario)
+  usuarioReservas: UsuarioReserva[];
 }

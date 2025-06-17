@@ -9,7 +9,7 @@ export class CreatePagoDto {
   monto: number;
 
   @IsDateString()
-  fecha: string;
+  fecha: Date;
 
   @IsString()
   @IsNotEmpty()

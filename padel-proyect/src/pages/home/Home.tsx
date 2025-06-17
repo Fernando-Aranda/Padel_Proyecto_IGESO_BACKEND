@@ -1,83 +1,99 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ModalLogin from '../../component/ModalLogin';
 import Navbar from '../../component/Navbar';
 import Sidecar from '../../component/Sidecar';
 import ModalRegister from '../../component/ModalRegister';
 
+interface Cancha {
+  id: number;
+  nombre: string;
+  capacidad_maxima: number;
+  precio_por_hora: string;
+  estado: string;
+}
+
+// Mapa fijo de imágenes por id
+const canchaImages: Record<number, string> = {
+  1: "https://www.greenpro.com.ar/paddle/GP%20GYM/2.jpg",
+  2: "https://img.freepik.com/foto-gratis/hombre-jugando-padel_657883-621.jpg?semt=ais_hybrid&w=740",
+  3: "https://www.greenpro.com.ar/fotos%20GP/historia-del-padel-portada.jpg",
+  4: "https://img.freepik.com/foto-gratis/pelota-padel-golpeando-red_23-2149459039.jpg?semt=ais_hybrid&w=740",
+  5: "https://www.greenpro.com.ar/fotos%20GP/historia-del-padel-portada.jpg",
+  6: "https://www.greenpro.com.ar/paddle/GP%20GYM/2.jpg",
+  7: "https://www.muchopadel.mx/cdn/shop/articles/cancha-de-padel-1_600x.jpg?v=1691087988",
+};
+
+// Array solo con URLs para imágenes aleatorias
+const canchaImagesList = Object.values(canchaImages);
+
+function getRandomImage(): string {
+  const randomIndex = Math.floor(Math.random() * canchaImagesList.length);
+  return canchaImagesList[randomIndex];
+}
+
 export default function Home() {
-  const[loginModal, setLoginModal] = useState(false);
-  const[registerModal, setRegisterModal] = useState(false);
+  const [loginModal, setLoginModal] = useState(false);
+  const [registerModal, setRegisterModal] = useState(false);
+  const [canchas, setCanchas] = useState<Cancha[]>([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3000/cancha')
+      .then((res) => res.json())
+      .then((data) => setCanchas(data))
+      .catch((error) => console.error('Error al cargar canchas:', error));
+  }, []);
 
   return (
     <>
-      <Navbar stateModalLogin={[loginModal, setLoginModal]} stateModalRegister={[registerModal, setRegisterModal]} />
+      <Navbar
+        stateModalLogin={[loginModal, setLoginModal]}
+        stateModalRegister={[registerModal, setRegisterModal]}
+      />
       <ModalLogin
-         stateModalLogin={[loginModal, setLoginModal]}
-         openRegisterModal={() => {
+        stateModalLogin={[loginModal, setLoginModal]}
+        openRegisterModal={() => {
           setLoginModal(false);
-         setRegisterModal(true);
-         }}
-        />
+          setRegisterModal(true);
+        }}
+      />
       <ModalRegister
-         stateModalRegister={[registerModal, setRegisterModal]}
-         openLoginModal={() => {
+        stateModalRegister={[registerModal, setRegisterModal]}
+        openLoginModal={() => {
           setRegisterModal(false);
           setLoginModal(true);
-         }}
-        />
+        }}
+      />
       <div className="container">
         <h1 className="main-title">Reserva tu Cancha de Pádel</h1>
-        
+
         <div className="courts-grid" id="courtsGrid">
-            {/* Cancha 1 */}
-            <div className="court-card" data-court-id="1">
-                <div className="court-image" style={{backgroundImage: "url('https://www.greenpro.com.ar/paddle/GP%20GYM/2.jpg')"}}></div>
+          {canchas.map((cancha) => {
+            // Si no existe imagen fija, asigna aleatoria
+            const imageUrl = canchaImages[cancha.id] || getRandomImage();
+
+            return (
+              <div className="court-card" key={cancha.id} data-court-id={cancha.id}>
+                <div
+                  className="court-image"
+                  style={{ backgroundImage: `url('${imageUrl}')` }}
+                ></div>
                 <div className="court-info">
-                    <div className="court-name">Cancha Premium</div>
-                    <div className="court-location"><i className="fas fa-map-marker-alt"></i> Club Deportivo, Santiago</div>
-                    <div className="court-price"><i className="fas fa-tag"></i> $15,000 por hora</div>
-                    <div className="court-description">Cancha de pádel premium con superficie de césped artificial e iluminación LED.</div>
-                    <button className="book-btn">Reservar</button>
+                  <div className="court-name">{cancha.nombre}</div>
+                  <div className="court-location">
+                    <i className="fas fa-users"></i> Capacidad: {cancha.capacidad_maxima}
+                  </div>
+                  <div className="court-price">
+                    <i className="fas fa-tag"></i> $
+                    {parseFloat(cancha.precio_por_hora).toLocaleString()} por hora
+                  </div>
+                  <div className="court-description">Estado: {cancha.estado}</div>
+                  <button className="book-btn">Reservar</button>
                 </div>
-            </div>
-            
-            {/* Cancha 2 */}
-            <div className="court-card" data-court-id="2">
-                <div className="court-image" style={{backgroundImage: "url('https://img.freepik.com/foto-gratis/hombre-jugando-padel_657883-621.jpg?semt=ais_hybrid&w=740')"}}></div>
-                <div className="court-info">
-                    <div className="court-name">Cancha Estándar</div>
-                    <div className="court-location"><i className="fas fa-map-marker-alt"></i> Parque Deportivo, Providencia</div>
-                    <div className="court-price"><i className="fas fa-tag"></i> $12,000 por hora</div>
-                    <div className="court-description">Cancha estándar con superficie de hormigón poroso y buena iluminación.</div>
-                    <button className="book-btn">Reservar</button>
-                </div>
-            </div>
-            
-            {/* Cancha 3 */}
-            <div className="court-card" data-court-id="3">
-                <div className="court-image" style={{backgroundImage: "url('https://www.greenpro.com.ar/fotos%20GP/historia-del-padel-portada.jpg')"}}></div>
-                <div className="court-info">
-                    <div className="court-name">Cancha VIP</div>
-                    <div className="court-location"><i className="fas fa-map-marker-alt"></i> Country Club, Las Condes</div>
-                    <div className="court-price"><i className="fas fa-tag"></i> $20,000 por hora</div>
-                    <div className="court-description">Cancha VIP con superficie de vidrio y sistema de sonido integrado.</div>
-                    <button className="book-btn">Reservar</button>
-                </div>
-            </div>
-            
-            {/* Cancha 4 */}
-            <div className="court-card" data-court-id="4">
-                <div className="court-image" style={{backgroundImage: "url('https://img.freepik.com/foto-gratis/pelota-padel-golpeando-red_23-2149459039.jpg?semt=ais_hybrid&w=740')"}}></div>
-                <div className="court-info">
-                    <div className="court-name">Cancha Básica</div>
-                    <div className="court-location"><i className="fas fa-map-marker-alt"></i> Centro Deportivo, Ñuñoa</div>
-                    <div className="court-price"><i className="fas fa-tag"></i> $10,000 por hora</div>
-                    <div className="court-description">Cancha básica ideal para principiantes y práctica casual.</div>
-                    <button className="book-btn">Reservar</button>
-                </div>
-            </div>
+              </div>
+            );
+          })}
         </div>
-    </div>
+      </div>
     </>
   );
 }

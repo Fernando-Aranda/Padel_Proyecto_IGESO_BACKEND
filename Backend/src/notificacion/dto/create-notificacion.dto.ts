@@ -9,7 +9,7 @@ export class CreateNotificacionDto {
   mensaje: string;
 
   @IsDateString()
-  fecha_envio: string;
+  fecha_envio: Date;
 
   @IsString()
   @IsNotEmpty()
