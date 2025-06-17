@@ -45,7 +45,7 @@ export class AdminService {
   }
 
   async remove(id: number): Promise<{ message: string }> {
-    const usuario = await this.findOne(id);
+    const admin = await this.findOne(id);
     await this.adminRepository.remove(admin);
     return { message: `Administrador con ID ${id} eliminado` };
   }
