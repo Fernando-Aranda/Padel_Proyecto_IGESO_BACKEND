@@ -3,6 +3,7 @@ import ModalLogin from '../../component/ModalLogin';
 import Navbar from '../../component/Navbar';
 import Sidecar from '../../component/Sidecar';
 import ModalRegister from '../../component/ModalRegister';
+import ModalReserva from '../../component/ModalReserva'; // 1. Importa el modal
 
 interface Cancha {
   id: number;
@@ -35,6 +36,8 @@ export default function Home() {
   const [loginModal, setLoginModal] = useState(false);
   const [registerModal, setRegisterModal] = useState(false);
   const [canchas, setCanchas] = useState<Cancha[]>([]);
+  const [modalReservaOpen, setModalReservaOpen] = useState(false); // 2. Estado para el modal
+  const [canchaSeleccionada, setCanchaSeleccionada] = useState<Cancha | null>(null); // Estado para la cancha
 
   useEffect(() => {
     fetch('http://localhost:3000/cancha')
@@ -65,12 +68,9 @@ export default function Home() {
       />
       <div className="container">
         <h1 className="main-title">Reserva tu Cancha de Pádel</h1>
-
         <div className="courts-grid" id="courtsGrid">
           {canchas.map((cancha) => {
-            // Si no existe imagen fija, asigna aleatoria
             const imageUrl = canchaImages[cancha.id] || getRandomImage();
-
             return (
               <div className="court-card" key={cancha.id} data-court-id={cancha.id}>
                 <div
@@ -87,13 +87,29 @@ export default function Home() {
                     {parseFloat(cancha.precio_por_hora).toLocaleString()} por hora
                   </div>
                   <div className="court-description">Estado: {cancha.estado}</div>
-                  <button className="book-btn">Reservar</button>
+                  <button
+                    className="book-btn"
+                    onClick={() => {
+                      setCanchaSeleccionada(cancha); // 3. Guarda la cancha seleccionada
+                      setModalReservaOpen(true);     // 4. Abre el modal
+                    }}
+                  >
+                    Reservar
+                  </button>
                 </div>
               </div>
             );
           })}
         </div>
       </div>
+      {/* 5. Renderiza el modal solo si hay cancha seleccionada */}
+      {canchaSeleccionada && (
+        <ModalReserva
+          open={modalReservaOpen}
+          cancha={canchaSeleccionada}
+          onClose={() => setModalReservaOpen(false)}
+        />
+      )}
     </>
   );
 }
