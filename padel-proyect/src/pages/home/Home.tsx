@@ -6,6 +6,7 @@ import ModalRegister from '../../component/ModalRegister';
 import ModalReserva from '../../component/ModalReserva';
 import ModalAgregarSaldo from '../../component/ModalAgregarSaldo';
 import useSessionStore from '../../stores/useSessionStorage';
+import ModalCrearCancha from '../../component/ModalCrearCancha';
 
 interface Cancha {
   id: number;
@@ -42,6 +43,7 @@ export default function Home() {
   const [modalSaldoOpen, setModalSaldoOpen] = useState(false);
   const [saldoActual, setSaldoActual] = useState(0);
   const [toggleSidecar, setToggleSidecar] = useState(false);
+  const [modalCrearCancha, setModalCrearCancha] = useState(false);
 
   (window as any).setModalSaldoOpen = setModalSaldoOpen;
 
@@ -70,6 +72,7 @@ export default function Home() {
       <Navbar
         stateModalLogin={[loginModal, setLoginModal]}
         stateModalRegister={[registerModal, setRegisterModal]}
+        stateModalCrearCancha={[modalCrearCancha, setModalCrearCancha]}
         abrirSidecar={() => setToggleSidecar(true)}
       />
       <ModalLogin
@@ -134,6 +137,17 @@ export default function Home() {
           }}
         />
       )}
+      <ModalCrearCancha
+        open={modalCrearCancha}
+        onClose={() => setModalCrearCancha(false)}
+              onCanchaCreada={() => {
+          setModalCrearCancha(false);
+          // Opcional: recarga las canchas
+          fetch('http://localhost:3000/cancha')
+            .then((res) => res.json())
+            .then((data) => setCanchas(data));
+        }}
+      />
       {/* Sidecar (carrito) */}
       <Sidecar
         stateToggleSidecar={[toggleSidecar, setToggleSidecar]}
