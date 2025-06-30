@@ -27,6 +27,10 @@ export class UsuarioController {
     return this.usuarioService.update(+id, updateUsuarioDto);
   }
 
+  @Patch('usuario/:id/saldo')
+  async agregarSaldo(@Param('id') id: number, @Body('monto') monto: number) {
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usuarioService.remove(+id);
