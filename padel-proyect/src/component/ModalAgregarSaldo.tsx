@@ -23,31 +23,30 @@ export default function ModalAgregarSaldo({ open, onClose, saldoActual, setSaldo
     
     const id_usuario = Number(useSessionStore.getState().userId);
     if (!id_usuario) {
-        setMensaje('Usuario no autenticado');
-        return;
+      setMensaje('Usuario no autenticado');
+      return;
     }
-    console.log('hola aqui llegamos');
 
     try {
-        const res = await fetch(`http://localhost:3000/usuario/${id_usuario}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ monto: montoNum }),
-        });
-        if (!res.ok) throw new Error('No se pudo agregar saldo');
-        // Opcional: puedes obtener el nuevo saldo del backend
-        const data = await res.json();
-        setSaldoActual(data.monto); // O ajusta según la respuesta de tu backend
-        setMensaje('Saldo agregado con éxito');
-        setMonto('');
-        setTimeout(() => {
-            setMensaje('');
-            onClose();
-        }, 1200);
-        } catch (error) {
-        setMensaje('Error al agregar saldo: ' + error);
-        }
-    };
+      const res = await fetch(`http://localhost:3000/usuario/${id_usuario}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ monto: montoNum }),
+      });
+      if (!res.ok) throw new Error('No se pudo agregar saldo');
+      const data = await res.json();
+      const nuevoSaldo = data.saldoActual ?? data.saldo ?? saldoActual + montoNum;
+      setSaldoActual(nuevoSaldo);
+      setMensaje('Saldo agregado con éxito');
+      setMonto('');
+      setTimeout(() => {
+        setMensaje('');
+        onClose();
+      }, 1200);
+    } catch (error) {
+      setMensaje('Error al agregar saldo: ' + error);
+    }
+  };
 
   
 

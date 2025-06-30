@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import '../index.css';
 import useSessionStore from '../stores/useSessionStorage';
 
 interface ModalReservaProps {
@@ -12,14 +11,15 @@ interface ModalReservaProps {
     estado: string;
   };
   onClose: () => void;
+  agregarAlCarrito: (reserva: any) => void;
 }
 
-export default function ModalReserva({ open, cancha, onClose }: ModalReservaProps) {
+export default function ModalReserva({ open, cancha, onClose, agregarAlCarrito }: ModalReservaProps) {
   const [fecha, setFecha] = useState('');
   const [hora, setHora] = useState('');
   const [mensaje, setMensaje] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setMensaje('');
 
@@ -40,25 +40,13 @@ export default function ModalReserva({ open, cancha, onClose }: ModalReservaProp
       fecha_fin: fecha_fin.toISOString(),
       estado: 'pendiente',
       monto_total: parseFloat(cancha.precio_por_hora),
+      cancha_nombre: cancha.nombre,
     };
 
-    console.log('Llega aquí reserva:', reserva);
-
-    try {
-      const res = await fetch('http://localhost:3000/reserva', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(reserva),
-      });
-      if (!res.ok) throw new Error('Error al reservar la cancha');
-      setMensaje('Reserva realizada con éxito');
-      setTimeout(() => {
-        onClose();
-        setMensaje('');
-      }, 1500);
-    } catch (error) {
-      setMensaje('Error al realizar la reserva: ' + error);
-    }
+    agregarAlCarrito(reserva);
+    setMensaje('Reserva agregada al carrito');
+    setFecha('');
+    setHora('');
   };
 
   if (!open) return null;
@@ -79,8 +67,8 @@ export default function ModalReserva({ open, cancha, onClose }: ModalReservaProp
             <label>Hora</label>
             <input type="time" value={hora} onChange={e => setHora(e.target.value)} required />
           </div>
-          {mensaje && <div style={{ color: mensaje.includes('éxito') ? 'green' : 'red' }}>{mensaje}</div>}
-          <button type="submit" className="form-submit">Confirmar Reserva</button>
+          {mensaje && <div style={{ color: mensaje.includes('carrito') ? 'green' : 'red' }}>{mensaje}</div>}
+          <button type="submit" className="form-submit">Agregar al Carrito</button>
         </form>
       </div>
     </div>

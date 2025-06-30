@@ -27,8 +27,11 @@ export class UsuarioController {
     return this.usuarioService.update(+id, updateUsuarioDto);
   }
 
-  @Patch('usuario/:id/saldo')
-  async agregarSaldo(@Param('id') id: number, @Body('monto') monto: number) {
+  @Patch(':id')
+  async agregarSaldo(@Param('id') id: string, @Body('monto') monto: number) {
+    const usuario = await this.usuarioService.agregarSaldo(+id, monto);
+    if (!usuario) {return { saldo: null, message: 'Usuario no encontrado' };}
+    return { saldo: usuario.monto };
   }
 
   @Delete(':id')

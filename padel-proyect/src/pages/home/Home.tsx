@@ -3,8 +3,9 @@ import ModalLogin from '../../component/ModalLogin';
 import Navbar from '../../component/Navbar';
 import Sidecar from '../../component/Sidecar';
 import ModalRegister from '../../component/ModalRegister';
-import ModalReserva from '../../component/ModalReserva'; // 1. Importa el modal
+import ModalReserva from '../../component/ModalReserva';
 import ModalAgregarSaldo from '../../component/ModalAgregarSaldo';
+import useSessionStore from '../../stores/useSessionStorage';
 
 interface Cancha {
   id: number;
@@ -14,7 +15,6 @@ interface Cancha {
   estado: string;
 }
 
-// Mapa fijo de imágenes por id
 const canchaImages: Record<number, string> = {
   1: "https://www.greenpro.com.ar/paddle/GP%20GYM/2.jpg",
   2: "https://img.freepik.com/foto-gratis/hombre-jugando-padel_657883-621.jpg?semt=ais_hybrid&w=740",
@@ -25,7 +25,6 @@ const canchaImages: Record<number, string> = {
   7: "https://www.muchopadel.mx/cdn/shop/articles/cancha-de-padel-1_600x.jpg?v=1691087988",
 };
 
-// Array solo con URLs para imágenes aleatorias
 const canchaImagesList = Object.values(canchaImages);
 
 function getRandomImage(): string {
@@ -34,13 +33,16 @@ function getRandomImage(): string {
 }
 
 export default function Home() {
+  const [carrito, setCarrito] = useState<any[]>([]);
   const [loginModal, setLoginModal] = useState(false);
   const [registerModal, setRegisterModal] = useState(false);
   const [canchas, setCanchas] = useState<Cancha[]>([]);
-  const [modalReservaOpen, setModalReservaOpen] = useState(false); // 2. Estado para el modal
-  const [canchaSeleccionada, setCanchaSeleccionada] = useState<Cancha | null>(null); // Estado para la cancha
+  const [modalReservaOpen, setModalReservaOpen] = useState(false);
+  const [canchaSeleccionada, setCanchaSeleccionada] = useState<Cancha | null>(null);
   const [modalSaldoOpen, setModalSaldoOpen] = useState(false);
   const [saldoActual, setSaldoActual] = useState(0);
+  const [toggleSidecar, setToggleSidecar] = useState(false);
+
   (window as any).setModalSaldoOpen = setModalSaldoOpen;
 
   useEffect(() => {
@@ -49,12 +51,26 @@ export default function Home() {
       .then((data) => setCanchas(data))
       .catch((error) => console.error('Error al cargar canchas:', error));
   }, []);
-  
+
+   // NUEVO: Cargar el saldo actual del usuario
+  useEffect(() => {
+    const id_usuario = useSessionStore.getState().userId; // O localStorage.getItem('id_usuario')
+    if (id_usuario) {
+      fetch(`http://localhost:3000/usuario/${id_usuario}`)
+        .then(res => res.json())
+        .then(data => {
+          if (typeof data.monto === 'number') setSaldoActual(data.monto);
+        })
+        .catch(() => setSaldoActual(0));
+    }
+  }, []);
+
   return (
     <>
       <Navbar
         stateModalLogin={[loginModal, setLoginModal]}
         stateModalRegister={[registerModal, setRegisterModal]}
+        abrirSidecar={() => setToggleSidecar(true)}
       />
       <ModalLogin
         stateModalLogin={[loginModal, setLoginModal]}
@@ -94,8 +110,8 @@ export default function Home() {
                   <button
                     className="book-btn"
                     onClick={() => {
-                      setCanchaSeleccionada(cancha); // 3. Guarda la cancha seleccionada
-                      setModalReservaOpen(true);     // 4. Abre el modal
+                      setCanchaSeleccionada(cancha);
+                      setModalReservaOpen(true);
                     }}
                   >
                     Reservar
@@ -106,14 +122,27 @@ export default function Home() {
           })}
         </div>
       </div>
-      {/* 5. Renderiza el modal solo si hay cancha seleccionada */}
+      {/* Modal de reserva */}
       {canchaSeleccionada && (
         <ModalReserva
           open={modalReservaOpen}
           cancha={canchaSeleccionada}
           onClose={() => setModalReservaOpen(false)}
+          agregarAlCarrito={(reserva) => {
+            setCarrito((prev) => [...prev, reserva]);
+            setModalReservaOpen(false);
+          }}
         />
       )}
+      {/* Sidecar (carrito) */}
+      <Sidecar
+        stateToggleSidecar={[toggleSidecar, setToggleSidecar]}
+        carrito={carrito}
+        setCarrito={setCarrito}
+        saldoActual={saldoActual}
+        setSaldoActual={setSaldoActual}
+      />
+      {/* Modal agregar saldo */}
       <ModalAgregarSaldo
         open={modalSaldoOpen}
         onClose={() => setModalSaldoOpen(false)}

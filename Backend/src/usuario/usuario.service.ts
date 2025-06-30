@@ -35,6 +35,14 @@ export class UsuarioService {
     return usuario;
   }
 
+    async agregarSaldo(id: number, monto: number): Promise<Usuario | undefined> {
+    const usuario = await this.usuarioRepository.findOne({ where: { id } });
+    if (!usuario) return undefined;
+    usuario.monto += Number(monto);
+    await this.usuarioRepository.save(usuario);
+    return usuario;
+  }
+
   async update(id: number, updateUsuarioDto: UpdateUsuarioDto): Promise<Usuario> {
     const usuario = await this.findOne(id);
     if (updateUsuarioDto.password) {

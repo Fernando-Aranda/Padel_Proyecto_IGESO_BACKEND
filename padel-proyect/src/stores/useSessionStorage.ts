@@ -9,6 +9,8 @@ type TSessionState = {
     username?: string 
     role?: string 
     userId?: number //<
+    monto?: number
+    setMonto: (monto?: number) => void
     setUserId: (userId?: number) => void //<
     routeId ?: string
     routeStatus : boolean
@@ -32,6 +34,8 @@ const useSessionStore = create<TSessionState>()(
                 routeId : undefined,
                 userId: undefined, //<
                 isLogin: false, //<
+                monto: undefined,
+                setMonto: (monto? : number) => set(() => ({ monto })), 
                 setIsLogin: (isLogin : boolean) => set(() => ({ isLogin })), //<
                 setRouteStatus : (routeStatus : boolean) => set(() => ({ routeStatus })),
                 setUsername: (username : string) => set(() => ({ username })),
