@@ -12,7 +12,7 @@ export default function ModalLogin({ stateModalLogin, openRegisterModal }: Modal
     const [correo, setCorreo] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { setIsLogin, setUsername } = useSessionStore();
+    const { setIsLogin, setUsername, setUserId } = useSessionStore();
 
     //useEffect(() => {}, [])
 
@@ -31,6 +31,7 @@ export default function ModalLogin({ stateModalLogin, openRegisterModal }: Modal
             const data = await res.json();
             console.log(data);
             setUsername(data.nombre);
+            setUserId(data.id);
             setIsLogin(true);
             setLoginModal(false);
         } catch (err) {

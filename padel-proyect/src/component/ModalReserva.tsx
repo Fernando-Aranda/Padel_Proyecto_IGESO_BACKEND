@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import '../index.css';
+import useSessionStore from '../stores/useSessionStorage';
 
 interface ModalReservaProps {
   open: boolean;
@@ -21,25 +22,42 @@ export default function ModalReserva({ open, cancha, onClose }: ModalReservaProp
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMensaje('');
+
+    const id_usuario = Number(useSessionStore.getState().userId);
+    if (!id_usuario) {
+      setMensaje('Usuario no autenticado');
+      return;
+    }
+
+    const fecha_inicio = `${fecha}T${hora}:00`;
+    const fecha_fin = new Date(fecha_inicio);
+    fecha_fin.setHours(fecha_fin.getHours() + 1);
+
+    const reserva = {
+      id_usuario,
+      id_cancha: cancha.id,
+      fecha_inicio,
+      fecha_fin: fecha_fin.toISOString(),
+      estado: 'pendiente',
+      monto_total: parseFloat(cancha.precio_por_hora),
+    };
+
+    console.log('Llega aquí reserva:', reserva);
+
     try {
       const res = await fetch('http://localhost:3000/reserva', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          canchaId: cancha.id,
-          fecha,
-          hora,
-          // Puedes agregar aquí el usuario si tienes sesión
-        }),
+        body: JSON.stringify(reserva),
       });
-      if (!res.ok) throw new Error('Error al reservar');
+      if (!res.ok) throw new Error('Error al reservar la cancha');
       setMensaje('Reserva realizada con éxito');
       setTimeout(() => {
         onClose();
         setMensaje('');
       }, 1500);
-    } catch (err) {
-      setMensaje('No se pudo realizar la reserva');
+    } catch (error) {
+      setMensaje('Error al realizar la reserva: ' + error);
     }
   };
 

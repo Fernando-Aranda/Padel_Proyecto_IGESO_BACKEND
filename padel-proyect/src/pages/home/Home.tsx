@@ -4,6 +4,7 @@ import Navbar from '../../component/Navbar';
 import Sidecar from '../../component/Sidecar';
 import ModalRegister from '../../component/ModalRegister';
 import ModalReserva from '../../component/ModalReserva'; // 1. Importa el modal
+import ModalAgregarSaldo from '../../component/ModalAgregarSaldo';
 
 interface Cancha {
   id: number;
@@ -38,6 +39,9 @@ export default function Home() {
   const [canchas, setCanchas] = useState<Cancha[]>([]);
   const [modalReservaOpen, setModalReservaOpen] = useState(false); // 2. Estado para el modal
   const [canchaSeleccionada, setCanchaSeleccionada] = useState<Cancha | null>(null); // Estado para la cancha
+  const [modalSaldoOpen, setModalSaldoOpen] = useState(false);
+  const [saldoActual, setSaldoActual] = useState(0);
+  (window as any).setModalSaldoOpen = setModalSaldoOpen;
 
   useEffect(() => {
     fetch('http://localhost:3000/cancha')
@@ -45,7 +49,7 @@ export default function Home() {
       .then((data) => setCanchas(data))
       .catch((error) => console.error('Error al cargar canchas:', error));
   }, []);
-
+  
   return (
     <>
       <Navbar
@@ -110,6 +114,12 @@ export default function Home() {
           onClose={() => setModalReservaOpen(false)}
         />
       )}
+      <ModalAgregarSaldo
+        open={modalSaldoOpen}
+        onClose={() => setModalSaldoOpen(false)}
+        saldoActual={saldoActual}
+        setSaldoActual={setSaldoActual}
+      />
     </>
   );
 }
