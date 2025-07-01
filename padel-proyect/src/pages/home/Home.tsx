@@ -8,12 +8,13 @@ import ModalAgregarSaldo from '../../component/ModalAgregarSaldo';
 import useSessionStore from '../../stores/useSessionStorage';
 import ModalCrearCancha from '../../component/ModalCrearCancha';
 import ModalReporte from '../../component/ModalReporte';
+import ModalEditarCancha from '../../component/ModalEditarCancha';
 
 interface Cancha {
   id: number;
   nombre: string;
   capacidad_maxima: number;
-  precio_por_hora: string;
+  precio_por_hora: number;
   estado: string;
 }
 
@@ -46,6 +47,9 @@ export default function Home() {
   const [toggleSidecar, setToggleSidecar] = useState(false);
   const [modalCrearCancha, setModalCrearCancha] = useState(false);
   const [modalReporteOpen, setModalReporteOpen] = useState(false);
+  const [canchaEditando, setCanchaEditando] = useState<Cancha | null>(null);
+
+  const rol = useSessionStore(state => state.rol);
 
   (window as any).setModalSaldoOpen = setModalSaldoOpen;
 
@@ -114,7 +118,7 @@ export default function Home() {
                   </div>
                   <div className="court-price">
                     <i className="fas fa-tag"></i> $
-                    {parseFloat(cancha.precio_por_hora).toLocaleString()} por hora
+                    {cancha.precio_por_hora.toLocaleString()} por hora
                   </div>
                   <div className="court-description">Estado: {cancha.estado}</div>
                   <button
@@ -126,6 +130,32 @@ export default function Home() {
                   >
                     Reservar
                   </button>
+                                    {/* SOLO PARA ADMINISTRADOR */}
+                  {rol === 'administrador' && (
+                    <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
+                      <button
+                        className="edit-btn"
+                        style={{ background: '#ffc107', color: '#222', borderRadius: 6, padding: '4px 10px' }}
+                        onClick={() => setCanchaEditando(cancha)}
+                      >
+                        <i className="fas fa-edit"></i> Editar
+                      </button>
+                      <button
+                        className="delete-btn"
+                        style={{ background: '#dc3545', color: 'white', borderRadius: 6, padding: '4px 10px' }}
+                        onClick={async () => {
+                          if (window.confirm('¿Seguro que deseas eliminar esta cancha?')) {
+                            await fetch(`http://localhost:3000/cancha/${cancha.id}`, {
+                              method: 'DELETE'
+                            });
+                            setCanchas(canchas.filter(c => c.id !== cancha.id));
+                          }
+                        }}
+                      >
+                        <i className="fas fa-trash"></i> Eliminar
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             );
@@ -136,11 +166,25 @@ export default function Home() {
       {canchaSeleccionada && (
         <ModalReserva
           open={modalReservaOpen}
-          cancha={canchaSeleccionada}
+          cancha={{
+            ...canchaSeleccionada,
+            precio_por_hora: canchaSeleccionada.precio_por_hora.toString(),
+          }}
           onClose={() => setModalReservaOpen(false)}
           agregarAlCarrito={(reserva) => {
-            setCarrito((prev) => [...prev, reserva]);
+            setCarrito((prev: any) => [...prev, reserva]);
             setModalReservaOpen(false);
+          }}
+        />
+      )}
+            {/* MODAL DE EDICIÓN */}
+      {canchaEditando && (
+        <ModalEditarCancha
+          cancha={canchaEditando}
+          onClose={() => setCanchaEditando(null)}
+          onCanchaEditada={canchaActualizada => {
+            setCanchas(canchas.map((c: Cancha) => c.id === canchaActualizada.id ? canchaActualizada : c));
+            setCanchaEditando(null);
           }}
         />
       )}
