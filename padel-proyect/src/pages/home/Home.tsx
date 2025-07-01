@@ -7,6 +7,7 @@ import ModalReserva from '../../component/ModalReserva';
 import ModalAgregarSaldo from '../../component/ModalAgregarSaldo';
 import useSessionStore from '../../stores/useSessionStorage';
 import ModalCrearCancha from '../../component/ModalCrearCancha';
+import ModalReporte from '../../component/ModalReporte';
 
 interface Cancha {
   id: number;
@@ -44,6 +45,7 @@ export default function Home() {
   const [saldoActual, setSaldoActual] = useState(0);
   const [toggleSidecar, setToggleSidecar] = useState(false);
   const [modalCrearCancha, setModalCrearCancha] = useState(false);
+  const [modalReporteOpen, setModalReporteOpen] = useState(false);
 
   (window as any).setModalSaldoOpen = setModalSaldoOpen;
 
@@ -74,6 +76,7 @@ export default function Home() {
         stateModalRegister={[registerModal, setRegisterModal]}
         stateModalCrearCancha={[modalCrearCancha, setModalCrearCancha]}
         abrirSidecar={() => setToggleSidecar(true)}
+        stateModalReporte={[modalReporteOpen, setModalReporteOpen]}
       />
       <ModalLogin
         stateModalLogin={[loginModal, setLoginModal]}
@@ -155,6 +158,10 @@ export default function Home() {
         setCarrito={setCarrito}
         saldoActual={saldoActual}
         setSaldoActual={setSaldoActual}
+      />
+      <ModalReporte
+        open={modalReporteOpen}
+        onClose={() => setModalReporteOpen(false)}
       />
       {/* Modal agregar saldo */}
       <ModalAgregarSaldo

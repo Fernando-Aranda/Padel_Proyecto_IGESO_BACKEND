@@ -8,16 +8,18 @@ type NavbarProps = {
     stateModalRegister: [ boolean, React.Dispatch<React.SetStateAction<boolean>> ]
     stateModalCrearCancha: [ boolean, React.Dispatch<React.SetStateAction<boolean>> ]
     abrirSidecar: () => void
+    stateModalReporte: [ boolean, React.Dispatch<React.SetStateAction<boolean>> ]
 }
 
 //soy conciente que loginModal y registerModal no son necesarios, pero los dejo por si en un futuro se necesitan
 //si no se usan, se pueden eliminar y usar directamente stateModalLogin y stateModalRegister
 
-export default function Navbar({ stateModalLogin, stateModalRegister, stateModalCrearCancha, abrirSidecar }: NavbarProps) {
+export default function Navbar({ stateModalLogin, stateModalRegister, stateModalCrearCancha, abrirSidecar, stateModalReporte }: NavbarProps) {
     const [loginModal, setLoginModal] = stateModalLogin;
     const [registerModal, setRegisterModal] = stateModalRegister;
     const [toggleSidecar, setToggleSidecar] = useState(false);
     const { setIsLogin , isLogin , username , role} = useSessionStore();
+    const [modalReporteOpen, setModalReporteOpen] = stateModalReporte;
 
     const handleLoginClick = () => {
         setLoginModal(true);
@@ -45,11 +47,16 @@ export default function Navbar({ stateModalLogin, stateModalRegister, stateModal
                     <span className="cart-count" id="cartCount">0</span>
                 </div>
             </div>
-            {role === 'administrador' && (
+            
+                <>
                 <button onClick={() => stateModalCrearCancha[1](true)}>
                     <i className="fa-solid fa-plus"></i> Crear Cancha
                 </button>
-            )}
+                <button onClick={() => setModalReporteOpen(true)} style={{ marginLeft: 8 }}>
+                    <i className="fa-solid fa-file-alt"></i> Generar Reporte
+                </button>
+                </>
+            
             {isLogin ? null : 
             <div className="auth-buttons" id="authButtons">
                 <button className="login-btn" id="loginBtn" onClick={handleLoginClick}>Iniciar Sesión</button>
