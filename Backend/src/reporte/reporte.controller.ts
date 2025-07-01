@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ReporteService } from './reporte.service';
 import { CreateReporteDto } from './dto/create-reporte.dto';
 import { UpdateReporteDto } from './dto/update-reporte.dto';
@@ -30,5 +39,10 @@ export class ReporteController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.reporteService.remove(+id);
+  }
+
+  @Get('cancha/:id')
+  getReporteCancha(@Param('id', ParseIntPipe) id: number) {
+    return this.reporteService.generarInformePorCancha(id);
   }
 }
