@@ -37,7 +37,7 @@ export default function ModalReporte({ open, onClose }: ModalReporteProps) {
       return;
     }
     try {
-      const res = await fetch(`http://localhost:3000/cancha/${canchaId}/reporte`);
+      const res = await fetch(`http://localhost:3000/reporte/cancha/${canchaId}`);
       if (!res.ok) throw new Error('No se pudo obtener el reporte');
       const data = await res.json();
       setReporte(data);
