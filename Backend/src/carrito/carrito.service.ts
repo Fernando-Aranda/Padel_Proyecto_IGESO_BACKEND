@@ -5,6 +5,7 @@ import { Carrito } from './entities/carrito.entity';
 import { CreateCarritoDto } from './dto/create-carrito.dto';
 import { UpdateCarritoDto } from './dto/update-carrito.dto';
 import { Usuario } from '../usuario/entities/usuario.entity';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class CarritoService {
@@ -13,6 +14,7 @@ export class CarritoService {
     private readonly carritoRepository: Repository<Carrito>,
     @InjectRepository(Usuario)
     private readonly usuarioRepository: Repository<Usuario>,
+    private readonly emailService: EmailService,
   ) {}
 
   async create(createCarritoDto: CreateCarritoDto): Promise<Carrito> {

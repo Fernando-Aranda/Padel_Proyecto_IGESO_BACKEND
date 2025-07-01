@@ -6,6 +6,7 @@ import { Cancha } from '../cancha/entities/cancha.entity';
 import { Repository } from 'typeorm';
 import { CreateReservaDto } from './dto/create-reserva.dto';
 import { UpdateReservaDto } from './dto/update-reserva.dto';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class ReservaService {
@@ -18,6 +19,7 @@ export class ReservaService {
 
     @InjectRepository(Cancha)
     private canchaRepository: Repository<Cancha>,
+    private readonly emailService: EmailService,
   ) {}
 
   async create(createReservaDto: CreateReservaDto): Promise<Reserva> {
@@ -42,6 +44,18 @@ export class ReservaService {
       usuario,
       cancha,
     });
+
+    const reservaGuardada = await this.reservaRepository.save(reserva);
+
+    // Enviar correo de confirmación si el usuario tiene email
+    if (usuario.correo) {
+      await this.emailService.sendReservaConfirmation(usuario.correo, {
+        cancha_nombre: cancha.nombre,
+        fecha_inicio: reservaGuardada.fecha_inicio,
+        fecha_fin: reservaGuardada.fecha_fin,
+        monto_total: reservaGuardada.monto_total,
+      });
+    }
 
     return this.reservaRepository.save(reserva);
   }

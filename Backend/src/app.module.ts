@@ -24,6 +24,7 @@ import { CarritoModule } from './carrito/carrito.module';
 import { CarritoItemModule } from './carrito-item/carrito-item.module';
 import { Carrito } from './carrito/entities/carrito.entity';
 import { CarritoItem } from './carrito-item/entities/carrito-item.entity';
+import { EmailService } from './email/email.service';
 
 
 @Module({
@@ -62,6 +63,7 @@ import { CarritoItem } from './carrito-item/entities/carrito-item.entity';
     CarritoItemModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [EmailService],
+  exports: [EmailService]
 })
 export class AppModule {}

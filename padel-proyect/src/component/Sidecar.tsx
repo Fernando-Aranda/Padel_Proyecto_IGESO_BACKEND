@@ -30,10 +30,18 @@ export default function Sidecar( {stateToggleSidecar, carrito, setCarrito, saldo
         }
         try {
             for (const reserva of carrito) {
+               console.log('Enviando reserva:', {...reserva, estado: 'ocupada'});
                 await fetch('http://localhost:3000/reserva', {
                     method: 'POST',
                     headers: { 'Content-Type':  'application/json' },
-                    body: JSON.stringify({...reserva, estado: 'ocupada' }),
+                    body: JSON.stringify({
+                            id_usuario: reserva.id_usuario,
+                            id_cancha: reserva.id_cancha,
+                            fecha_inicio: reserva.fecha_inicio,
+                            fecha_fin: reserva.fecha_fin,
+                            estado: 'ocupada',
+                            monto_total: reserva.monto_total,
+                    }),
                 });
             }
             setSaldoActual(saldoActual - total)
