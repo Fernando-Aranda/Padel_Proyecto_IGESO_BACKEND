@@ -78,6 +78,10 @@ export default function Home() {
         abrirSidecar={() => setToggleSidecar(true)}
         stateModalReporte={[modalReporteOpen, setModalReporteOpen]}
       />
+      <ModalReporte
+      open={modalReporteOpen}
+      onClose={() => setModalReporteOpen(false)}
+      />
       <ModalLogin
         stateModalLogin={[loginModal, setLoginModal]}
         openRegisterModal={() => {

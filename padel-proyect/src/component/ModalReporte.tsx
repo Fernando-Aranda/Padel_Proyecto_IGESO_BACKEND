@@ -1,36 +1,48 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ModalReporteProps {
   open: boolean;
   onClose: () => void;
 }
 
+interface Cancha {
+  id: number;
+  nombre: string;
+  estado: string;
+}
+
 export default function ModalReporte({ open, onClose }: ModalReporteProps) {
-  const [descripcion, setDescripcion] = useState('');
+  const [canchas, setCanchas] = useState<Cancha[]>([]);
+  const [canchaId, setCanchaId] = useState('');
+  const [reporte, setReporte] = useState<any>(null);
   const [mensaje, setMensaje] = useState('');
 
-  const handleGenerar = async (e: React.FormEvent) => {
+  useEffect(() => {
+    if (open) {
+      fetch('http://localhost:3000/cancha')
+        .then(res => res.json())
+        .then(data => setCanchas(data));
+      setReporte(null);
+      setCanchaId('');
+      setMensaje('');
+    }
+  }, [open]);
+
+  const handleConsultar = async (e: React.FormEvent) => {
     e.preventDefault();
     setMensaje('');
-    if (!descripcion) {
-      setMensaje('La descripción es obligatoria');
+    setReporte(null);
+    if (!canchaId) {
+      setMensaje('Selecciona una cancha');
       return;
     }
     try {
-      const res = await fetch('http://localhost:3000/reporte', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ descrip: descripcion, fecha: new Date() }),
-      });
-      if (!res.ok) throw new Error('No se pudo generar el reporte');
-      setMensaje('Reporte generado con éxito');
-      setDescripcion('');
-      setTimeout(() => {
-        setMensaje('');
-        onClose();
-      }, 1200);
-    } catch (err) {
-      setMensaje('Error al generar el reporte');
+      const res = await fetch(`http://localhost:3000/cancha/${canchaId}/reporte`);
+      if (!res.ok) throw new Error('No se pudo obtener el reporte');
+      const data = await res.json();
+      setReporte(data);
+    } catch {
+      setMensaje('Error al obtener el reporte');
     }
   };
 
@@ -40,25 +52,33 @@ export default function ModalReporte({ open, onClose }: ModalReporteProps) {
     <div className="modal" style={{ display: open ? 'flex' : 'none' }}>
       <div className="modal-content">
         <div className="modal-header">
-          <h2>Generar Reporte</h2>
+          <h2>Reporte por Cancha</h2>
           <button className="close-btn" onClick={onClose}>&times;</button>
         </div>
-        <form onSubmit={handleGenerar}>
+        <form onSubmit={handleConsultar}>
           <div className="form-group">
-            <label>Descripción</label>
-            <textarea
-              value={descripcion}
-              onChange={e => setDescripcion(e.target.value)}
-              required
-              rows={4}
-              style={{ width: '100%' }}
-            />
+            <label>Selecciona una cancha</label>
+            <select value={canchaId} onChange={e => setCanchaId(e.target.value)} required>
+              <option value="">-- Selecciona --</option>
+              {canchas.map(c => (
+                <option key={c.id} value={c.id}>{c.nombre}</option>
+              ))}
+            </select>
           </div>
-          {mensaje && <div style={{ color: mensaje.includes('éxito') ? 'green' : 'red', marginTop: 8 }}>{mensaje}</div>}
           <button type="submit" className="form-submit" style={{ marginTop: 12 }}>
-            Generar Reporte
+            Consultar
           </button>
         </form>
+        {mensaje && <div style={{ color: 'red', marginTop: 8 }}>{mensaje}</div>}
+        {reporte && (
+          <div style={{ marginTop: 20, background: '#f7f7f7', padding: 16, borderRadius: 8 }}>
+            <h3>Datos de la Cancha</h3>
+            <div><b>Nombre:</b> {reporte.nombre}</div>
+            <div><b>Estado:</b> {reporte.estado}</div>
+            <div><b>Total generado:</b> ${reporte.totalGenerado.toLocaleString()}</div>
+            <div><b>Cantidad de veces reservada:</b> {reporte.cantidadReservas}</div>
+          </div>
+        )}
       </div>
     </div>
   );
