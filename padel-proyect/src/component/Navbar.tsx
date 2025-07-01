@@ -18,7 +18,7 @@ export default function Navbar({ stateModalLogin, stateModalRegister, stateModal
     const [loginModal, setLoginModal] = stateModalLogin;
     const [registerModal, setRegisterModal] = stateModalRegister;
     const [toggleSidecar, setToggleSidecar] = useState(false);
-    const { setIsLogin , isLogin , username , role} = useSessionStore();
+    const { setIsLogin , isLogin , username , rol} = useSessionStore();
     const [modalReporteOpen, setModalReporteOpen] = stateModalReporte;
 
     const handleLoginClick = () => {
@@ -47,7 +47,7 @@ export default function Navbar({ stateModalLogin, stateModalRegister, stateModal
                     <span className="cart-count" id="cartCount">0</span>
                 </div>
             </div>
-            
+            {rol === 'administrador' && (
                 <>
                 <button onClick={() => stateModalCrearCancha[1](true)}>
                     <i className="fa-solid fa-plus"></i> Crear Cancha
@@ -56,7 +56,7 @@ export default function Navbar({ stateModalLogin, stateModalRegister, stateModal
                     <i className="fa-solid fa-file-alt"></i> Generar Reporte
                 </button>
                 </>
-            
+            )}
             {isLogin ? null : 
             <div className="auth-buttons" id="authButtons">
                 <button className="login-btn" id="loginBtn" onClick={handleLoginClick}>Iniciar Sesión</button>

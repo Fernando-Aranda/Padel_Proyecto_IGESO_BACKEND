@@ -7,7 +7,7 @@ type TSessionState = {
     isLogin?: boolean //<
     setIsLogin: (isLogin: boolean) => void //<
     username?: string 
-    role?: string 
+    rol?: string 
     userId?: number //<
     monto?: number
     setMonto: (monto?: number) => void
@@ -16,7 +16,7 @@ type TSessionState = {
     routeStatus : boolean
     setUsername: (username : string) => void 
     setRouteStatus : (status : boolean) => void
-    setRole: (role : string) => void
+    setRol: (rol : string) => void
     setAccessToken: (accessToken : string) => void 
     setRouteId : (routeId ?: string) => void
     clearSession: () => void 
@@ -29,7 +29,7 @@ const useSessionStore = create<TSessionState>()(
             (set) => ({
                 accessToken: undefined,
                 username: undefined,
-                role: undefined,
+                rol: undefined,
                 routeStatus: false,
                 routeId : undefined,
                 userId: undefined, //<
@@ -41,12 +41,12 @@ const useSessionStore = create<TSessionState>()(
                 setUsername: (username : string) => set(() => ({ username })),
                 setUserId: (userId? : number) => set(() => ({ userId })), //<
                 setAccessToken: (accessToken : string) => set(() => ({ accessToken })),
-                setRole: (role : string) => set(() => ({ role })),
+                setRol: (rol : string) => set(() => ({ rol })),
                 setRouteId : (routeId ?: string) => set(() => ({ routeId })),
                 clearSession: () => (
                     set(() => ({
                         accessToken: undefined,
-                        role: undefined,
+                        rol: undefined,
                         username: undefined
                     }))
                 )                

@@ -12,7 +12,7 @@ export default function ModalLogin({ stateModalLogin, openRegisterModal }: Modal
     const [correo, setCorreo] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { setIsLogin, setUsername, setUserId } = useSessionStore();
+    const { setIsLogin, setUsername, setUserId, setRol } = useSessionStore();
 
     //useEffect(() => {}, [])
 
@@ -33,6 +33,7 @@ export default function ModalLogin({ stateModalLogin, openRegisterModal }: Modal
             setUsername(data.nombre);
             setUserId(data.id);
             setIsLogin(true);
+            setRol(data.rol);
             setLoginModal(false);
         } catch (err) {
             setError('Correo o contraseña incorrectos');
